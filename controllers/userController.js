@@ -164,6 +164,34 @@ const forgotPassword = asyncHandler(async (req, res) => {
   })
 
   if (reset) {
+    //////////////////////////
+    // mail send start here //
+    //////////////////////////
+
+    const testAccount = await nodemailer.createTestAccount()
+
+    const transport = nodemailer.createTransport({
+      host: '127.0.0.1',
+      port: 1025,
+      ignoreTLS: true,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    })
+
+    const info = await transport.sendMail({
+      from: 'Admin <admin@example.com>',
+      to: user.email,
+      subject: 'Reset Password Request',
+      text: 'Open in browser to activate account',
+      html: `<p>Click button below to reset account password</p><br><button><a href='http://${process.env.FE_URL}/reset-password/${reset.reset}'>Reset your password</a></button>`,
+    })
+
+    //////////////////////////
+    //      mail end        //
+    //////////////////////////
+
     res.status(201).json({
       _id: user._id,
       email: user.email,

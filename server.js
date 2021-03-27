@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
+import cors from 'cors'
 import connectDB from './config/db.js'
 import connectmail from './config/mail.js'
 import { notFound, errorHandler } from './middleware/errorMiddleware.js'
@@ -14,6 +15,7 @@ connectmail()
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
